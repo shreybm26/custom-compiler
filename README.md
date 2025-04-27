@@ -1,7 +1,6 @@
-
 # Custom Programming Language Compiler
 
-A fully functional compiler built for a custom imperative programming language, supporting lexical units, indentifiers, integers, strings, major types of operators and control structures.
+A fully functional compiler built for a custom imperative programming language, supporting lexical units, identifiers, integers, strings, major types of operators and control structures.
 Developed using **Python** and **Flex** for lexical analysis.
 
 ## Features
@@ -10,7 +9,7 @@ Developed using **Python** and **Flex** for lexical analysis.
   Tokenizes source code into identifiers, reserved words, numbers, strings, and delimiters using Flex.
 
 - **Syntax Analysis (Parsing)**  
-  Constructs parse trees and detects syntax errors using Bison based on a formally defined grammar.
+  Constructs parse trees and detects syntax errors using a custom Python-based parser.
 
 - **Semantic Analysis**  
   Ensures type consistency, validates identifiers, and detects semantic errors like undeclared variables or type mismatches.
@@ -29,31 +28,51 @@ Developed using **Python** and **Flex** for lexical analysis.
   - Conditional Statements (`if-else`)  
   - Loops (`while`)  
 
+## Project Structure
+
+```
+src/
+├── lexer.l           # Flex lexer specification
+├── lex.yy.c          # Generated lexer code
+├── lexer             # Compiled lexer executable
+├── parser.py         # Python-based parser
+├── tac_generator.py  # Three-Address Code generator
+├── code_generator.py # Final code generator
+├── utils.py          # Utility functions
+├── tokens.h          # Token definitions
+└── test.myLang       # Test program file
+```
+
 ## How to Build and Run
 
 1. **Install Dependencies**
    ```bash
-   sudo apt-get install flex bison python3
+   # For Windows (using MinGW or similar):
+   # Install Flex and GCC
+   
+   # For Linux:
+   sudo apt-get install flex gcc
    ```
 
 2. **Generate the Lexer**
    ```bash
+   cd src
    flex lexer.l
-   gcc lex.yy.c parser.tab.c -o compiler -lfl
+   gcc lex.yy.c -o lexer -lfl
    ```
 
 3. **Run the Compiler**
    ```bash
-   ./compiler < input_program.txt
+   # First run the lexer
+   ./lexer
+   
+   # Then run the Python-based compiler
+   python parser.py
    ```
 
-4. **(Optional) Intermediate and Final Code Generation**
-   - Run Python scripts for IR and code generation if separated:
-     ```bash
-     python3 main.py input_program.txt
-     ```
-
 ## Sample Input (Language Example)
+
+Create a file named `test.myLang` in the `src` directory with the following content:
 
 ```c
 int a;
@@ -63,5 +82,21 @@ b = 10;
 if a < b and b > 5 {
     write "a is smaller and b is big";
 }
-
 ```
+
+## Development
+
+The compiler pipeline works as follows:
+1. The Flex lexer (`lexer.l`) tokenizes the input program
+2. The Python parser (`parser.py`) processes the token stream
+3. The TAC generator (`tac_generator.py`) creates intermediate code
+4. The code generator (`code_generator.py`) produces the final output
+
+## Testing
+
+To test the compiler:
+1. Write your test program in `test.myLang`
+2. Run the lexer to generate tokens
+3. Run the Python compiler to process the tokens and generate output
+
+The compiler will output any errors or warnings during the compilation process. 
